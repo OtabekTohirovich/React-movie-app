@@ -39,6 +39,8 @@ class App extends Component {
         { name: "Good osman group", viewers: "928", favourite: false,like: false, id: 2 },
         { name: "Osman group", viewers: "728", favourite: true, like: true, id: 4 },
       ],
+      term: '',
+      filter: 'all',
     };
   }
   onDelete = (id) => {
@@ -59,40 +61,54 @@ class App extends Component {
     })
   }
 
-  onToggleFav = id =>{
+
+  onToggleProp = (id, prop) =>{
+    console.log(prop);
     this.setState(({data})=>({
       data: data.map(item =>{
         if(item.id === id) {
-          return {...item, favourite: !item.favourite}
+          return {...item, [prop]: !item[prop]}
         }
         return item
       })
     }))
 
   }
-  onTogglelike = id =>{
-    this.setState(({data})=>({
-      data: data.map(item =>{
-        if(item.id === id) {
-          return {...item, like: !item.like}
-        }
-        return item
-      })
-    }))
+  searchHandler = (arr, term) =>{
+    if (term.length === 0) {
+      return arr
+    }
+    return arr.filter(item => item.name.toLowerCase().indexOf(term)> -1)
+  }
+  filterHandler = (arr, filter) =>{
+    switch(filter) {
+      case 'popular': return arr.filter(data => data.like)
+      case 'mostviever': return arr.filter(data => data.viewers > 600)
+      default :
+        return arr
+    }
+  }
+  updateTermHandler = (term)=>{
+    this.setState({term})
+  }
+  filterUpdate = filter =>{
+    this.setState({filter})
   }
 
   render() {
-    const { data } = this.state;
-
+    const { data , term, filter } = this.state;
+    const allMovie = data.length
+    const favoriteMovie = data.filter(data => data.favourite).length
+    const visuballeData = this.filterHandler(this.searchHandler(data , term), filter)
     return (
       <div className="app font-monospace">
         <div className="content">
-          <AppInfo />
+          <AppInfo allMovie={allMovie} favoriteMovie={favoriteMovie}/>
           <div className="search__panel">
-            <SearchPanel />
-            <AppFilter />
+            <SearchPanel updateTermHandler={this.updateTermHandler} />
+            <AppFilter filter={filter} filterUpdate={this.filterUpdate}/>
           </div>
-          <MovieList data={data} onDelete={this.onDelete} onToggleFav={this.onToggleFav} onTogglelike={this.onTogglelike} />
+          <MovieList data={visuballeData} onDelete={this.onDelete} onToggleProp={this.onToggleProp} />
           <MovieAdd addForm={this.addForm}/>
         </div>
       </div>
@@ -101,3 +117,13 @@ class App extends Component {
 }
 
 export default App;
+  // onTogglelike = id =>{
+  //   this.setState(({data})=>({
+  //     data: data.map(item =>{
+  //       if(item.id === id) {
+  //         return {...item, like: !item.like}
+  //       }
+  //       return item
+  //     })
+  //   }))
+  // }

@@ -1,7 +1,7 @@
 import "./movie-list.css";
 
 import MovielistItem from "../movie-list-item/movielist-item";
-const MovieList = ({ data, onDelete, onTogglelike, onToggleFav }) => {
+const MovieList = ({ data, onDelete, onToggleProp}) => {
   return (
     <div className="movie-list">
       {data.map((item) => (
@@ -12,8 +12,7 @@ const MovieList = ({ data, onDelete, onTogglelike, onToggleFav }) => {
           favourite={item.favourite}
           like={item.like}
           onDelete={() => onDelete(item.id)}
-          onToggleFav={() => onToggleFav(item.id)}
-          onTogglelike={() => onTogglelike(item.id)}
+          onToggleProp={(e) => onToggleProp(item.id, e.currentTarget.getAttribute('data-toggle'))}
         />
       ))}
     </div>
