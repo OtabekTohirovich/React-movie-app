@@ -6,6 +6,8 @@ import MovieAdd from "../movie-add/movie-add";
 import MovieList from "../movie-list/movie-list";
 import { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
+import { useContext } from "react";
+import { Context } from "../contex";
 
 const App = () => {
   const [data, setData] = useState([]);
@@ -13,9 +15,11 @@ const App = () => {
   const [filter, setfilter] = useState("all");
   const [isLoding, setisLoding] = useState(false);
 
-  const onDelete = (id) => {
-    setData(data.filter((c) => c.id !== id));
-  };
+  const {state, dispatch} = useContext(Context)
+  // console.log(dispatch, state);
+  // const onDelete = (id) => {
+  //   setData(data.filter((c) => c.id !== id));
+  // };
   const addForm = (item) => {
     const newItem = {
       name: item.name,
@@ -36,23 +40,7 @@ const App = () => {
     });
     setData(newArr);
   };
-  const searchHandler = (arr, term) => {
-    if (term.length === 0) {
-      return arr;
-    }
-    return arr.filter((item) => item.name.toLowerCase().indexOf(term) > -1);
-  };
-
-  const filterHandler = (arr, filter) => {
-    switch (filter) {
-      case "popular":
-        return arr.filter((data) => data.like);
-      case "mostviever":
-        return arr.filter((data) => data.viewers > 600);
-      default:
-        return arr;
-    }
-  };
+ 
   const updateTermHandler = (term) => {
     setTerm(term);
   };
@@ -74,6 +62,7 @@ const App = () => {
         }));
         console.log(newArr);
         setData(newArr);
+        dispatch({type: 'GET_DATA', payload: newArr})
       })
       .catch((err) => console.log(err))
       .finally(() => setisLoding(false));
@@ -82,23 +71,15 @@ const App = () => {
   return (
     <div className="app font-monospace">
       <div className="content">
-        <AppInfo
-          allMovie={data.length}
-          favoriteMovie={data.filter((data) => data.favourite).length}
-        />
+        <AppInfo        />
         <div className="search__panel">
-          <SearchPanel updateTermHandler={updateTermHandler} />
-          <AppFilter filter={filter} filterUpdate={filterUpdate} />
+          <SearchPanel />
+          <AppFilter />
         </div>
         {isLoding && "Loading...."}
-        <MovieList
-          data={filterHandler(searchHandler(data, term), filter)}
-          onDelete={onDelete}
-          onToggleProp={onToggleProp}
-          
-        />
+        <MovieList />
 
-        <MovieAdd addForm={addForm} />
+        <MovieAdd />
       </div>
     </div>
   );

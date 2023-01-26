@@ -1,9 +1,12 @@
 import "./movie-add.css";
-import { useState } from "react";
+import { useState ,useContext} from "react";
+import { Context } from "../contex";
 // Fragment
 
-const MovieAdd = ({addForm}) => {
+const MovieAdd = () => {
   const [state,  setState] = useState({name: '', viewers: ''})
+  const { _, dispatch } = useContext(Context)
+
 
   const changeHandler = e =>{
     setState({ ...state, [e.target.name]: e.target.value })
@@ -11,7 +14,7 @@ const MovieAdd = ({addForm}) => {
   const addformhandler = e =>{
     e.preventDefault()
     const data = { name: state.name, viewers: state.viewers }
-    addForm(data)
+    dispatch({type: 'AddMovie', payload: data})
     setState({ name: '', viewers: '' })
   }
 

@@ -1,14 +1,17 @@
+import { useContext } from "react";
+import { Context } from "../contex";
 import "./app-filter.css";
-const AppFilter = ({ filterUpdate, filter }) => {
+const AppFilter = () => {
+  const {state, dispatch} = useContext(Context)
   return (
     <div className="btn-group">
       {btnArr.map((btn) => (
         <button
           key={btn.name}
           className={`btn ${
-            filter === btn.name ? "btn-dark" : "btn-outline-dark"
+            state.filter === btn.name ? "btn-dark" : "btn-outline-dark"
           }`}
-          onClick={() => filterUpdate(btn.name)}
+          onClick={() => dispatch({type: 'onfiltr', payload: btn.name})}
           type="button"
         >
           {btn.label}
@@ -17,6 +20,7 @@ const AppFilter = ({ filterUpdate, filter }) => {
     </div>
   );
 };
+
 
 const btnArr = [
   { name: "all", label: "Barcha kinolar" },
